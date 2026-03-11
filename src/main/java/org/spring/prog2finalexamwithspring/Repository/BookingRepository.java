@@ -22,10 +22,13 @@ public class BookingRepository {
                 from booking b
                 order by b.id
                 """;
-        try(Connection con = dbConnection.getConnection();
-            PreparedStatement stmt = con.prepareStatement(sql);
-            ResultSet rs = stmt.executeQuery()
-                ) {
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        try{
+            con = dbConnection.getConnection();
+            pstmt = con.prepareStatement(sql);
+            rs = pstmt.executeQuery();
             List<Booking> bookings = new ArrayList<>();
             while(rs.next()){
                 Booking booking = new Booking();
@@ -41,6 +44,13 @@ public class BookingRepository {
             return bookings.isEmpty() ? new ArrayList<>() : bookings;
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (pstmt != null) pstmt.close();
+                if (con != null) con.close();
+            } catch (SQLException ignored) {
+            }
         }
     }
 
@@ -51,11 +61,15 @@ public class BookingRepository {
                 FROM booking
                 WHERE room_number = ? AND date = ?
                 """;
-        try (Connection con = dbConnection.getConnection();
-             PreparedStatement stmt = con.prepareStatement(sql)) {
+        Connection con = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try {
+            con = dbConnection.getConnection();
+            stmt = con.prepareStatement(sql);
             stmt.setInt(1, roomNumber);
             stmt.setDate(2, date != null ? Date.valueOf(date) : null);
-            ResultSet rs = stmt.executeQuery();
+            rs = stmt.executeQuery();
             if (rs.next()) {
                 int count = rs.getInt("count");
                 return count == 0;
@@ -63,18 +77,28 @@ public class BookingRepository {
             return false;
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }finally {
+            try {
+                if (rs != null) rs.close();
+                if (stmt != null) stmt.close();
+                if (con != null) con.close();
+            } catch (SQLException ignored) {
+            }
         }
     }
 
     /* Save Booking*/
-    public List<Booking> saveBooking(List<Booking> newList){
+    public List<Booking> saveBooking(List<Booking> newList) throws SQLException {
         String sql = """
                 INSERT INTO booking (date, client_name, client_email, client_phone, room_number, room_description)
                 VALUES (?, ?, ?, ?, ?, ?)
                 """;
-        try(Connection con = dbConnection.getConnection();
-            PreparedStatement stmt = con.prepareStatement(sql)
-        ) {
+        Connection con = null;
+        PreparedStatement stmt = null;
+        try{
+            con = dbConnection.getConnection();
+            stmt = con.prepareStatement(sql);
+            con.setAutoCommit(false);
             for (Booking booking : newList) {
                 stmt.setDate(1, Date.valueOf(booking.getDate()));
                 stmt.setString(2, booking.getClientName());
@@ -85,8 +109,14 @@ public class BookingRepository {
                 stmt.addBatch();
             }
             stmt.executeBatch();
+            con.commit();
             return newList;
         } catch (SQLException e) {
+            con.rollback();
+            try{
+                if(stmt != null) stmt.close();
+                con.close();
+            } catch (SQLException ignored){}
             throw new RuntimeException(e);
         }
     }
