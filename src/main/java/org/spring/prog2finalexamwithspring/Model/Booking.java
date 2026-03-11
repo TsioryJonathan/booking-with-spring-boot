@@ -1,21 +1,22 @@
 package org.spring.prog2finalexamwithspring.Model;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Objects;
 
 public class Booking {
-    private int id;
-    private Date date;
+    private Integer id;
+    private LocalDate date;
     private String clientName;
     private String clientEmail;
     private String clientPhone;
-    private int roomNumber;
+    private Integer roomNumber;
     private String roomDescription;
 
     public Booking() {
     }
 
-    public Booking(int id, Date date, String clientName, String clientEmail, String clientPhone, int roomNumber, String roomDescription) {
+    public Booking(Integer id, LocalDate date, String clientName, String clientEmail, String clientPhone, Integer roomNumber, String roomDescription) {
         this.id = id;
         this.date = date;
         this.clientName = clientName;
@@ -25,19 +26,19 @@ public class Booking {
         this.roomDescription = roomDescription;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 
@@ -65,11 +66,11 @@ public class Booking {
         this.clientPhone = clientPhone;
     }
 
-    public int getRoomNumber() {
+    public Integer getRoomNumber() {
         return roomNumber;
     }
 
-    public void setRoomNumber(int roomNumber) {
+    public void setRoomNumber(Integer roomNumber) {
         this.roomNumber = roomNumber;
     }
 
@@ -85,7 +86,7 @@ public class Booking {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Booking booking = (Booking) o;
-        return id == booking.id && roomNumber == booking.roomNumber && Objects.equals(date, booking.date) && Objects.equals(clientName, booking.clientName) && Objects.equals(clientEmail, booking.clientEmail) && Objects.equals(clientPhone, booking.clientPhone) && Objects.equals(roomDescription, booking.roomDescription);
+        return Objects.equals(id, booking.id) && Objects.equals(roomNumber, booking.roomNumber) && Objects.equals(date, booking.date) && Objects.equals(clientName, booking.clientName) && Objects.equals(clientEmail, booking.clientEmail) && Objects.equals(clientPhone, booking.clientPhone) && Objects.equals(roomDescription, booking.roomDescription);
     }
 
     @Override

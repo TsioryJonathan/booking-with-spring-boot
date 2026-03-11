@@ -3,9 +3,7 @@ package org.spring.prog2finalexamwithspring.Controller;
 import org.spring.prog2finalexamwithspring.Model.Booking;
 import org.spring.prog2finalexamwithspring.Service.BookingService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -19,5 +17,10 @@ public class BookingController {
     @GetMapping
     public ResponseEntity<List<Booking>> getAllBooking(){
         return ResponseEntity.ok(bookingService.getAll());
+    }
+
+    @PostMapping
+    public ResponseEntity<List<Booking>> createBookings(@RequestBody List<Booking> newBookings){
+        return ResponseEntity.ok(bookingService.saveBooking(newBookings));
     }
 }
