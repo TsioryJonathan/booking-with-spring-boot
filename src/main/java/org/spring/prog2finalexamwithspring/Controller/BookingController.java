@@ -5,6 +5,7 @@ import org.spring.prog2finalexamwithspring.Service.BookingService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.SQLException;
 import java.util.List;
 
 @RestController
@@ -20,7 +21,7 @@ public class BookingController {
     }
 
     @PostMapping
-    public ResponseEntity<List<Booking>> createBookings(@RequestBody List<Booking> newBookings){
+    public ResponseEntity<List<Booking>> createBookings(@RequestBody List<Booking> newBookings) throws SQLException {
         return ResponseEntity.ok(bookingService.saveBooking(newBookings));
     }
 }
